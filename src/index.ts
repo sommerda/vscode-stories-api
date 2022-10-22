@@ -54,26 +54,26 @@ const main = async () => {
   console.log("migrations ran");
 
   // google cloud
-  const storage = new Storage({
-    keyFilename: path.join(__dirname, `../${process.env.STORAGE_CRED_FILE}`),
-    projectId: process.env.STORAGE_PROJ_ID,
-  });
+//   const storage = new Storage({
+//     keyFilename: path.join(__dirname, `../${process.env.STORAGE_CRED_FILE}`),
+//     projectId: process.env.STORAGE_PROJ_ID,
+//   });
 
-  const gifStoriesBucket = storage.bucket(`${process.env.STORAGE_BUCKET}`);
+//   const gifStoriesBucket = storage.bucket(`${process.env.STORAGE_BUCKET}`);
 
-  // https://cloud.google.com/storage/docs/xml-api/reference-headers#xgoogcontentlengthrange
-  async function configureBucketCors() {
-    await gifStoriesBucket.setCorsConfiguration([
-      {
-        maxAgeSeconds: 3600,
-        method: ["PUT", "GET"],
-        origin: [`${process.env.ORIGIN_URL}`],
-        responseHeader: ["x-goog-content-length-range"],
-      },
-    ]);
-  }
+//   // https://cloud.google.com/storage/docs/xml-api/reference-headers#xgoogcontentlengthrange
+//   async function configureBucketCors() {
+//     await gifStoriesBucket.setCorsConfiguration([
+//       {
+//         maxAgeSeconds: 3600,
+//         method: ["PUT", "GET"],
+//         origin: [`${process.env.ORIGIN_URL}`],
+//         responseHeader: ["x-goog-content-length-range"],
+//       },
+//     ]);
+//   }
 
-  configureBucketCors();
+//   configureBucketCors();
 
   // action.types read, write, delete
   const gcsSignedUrl = async (
@@ -415,50 +415,50 @@ const main = async () => {
     }
   );
 
-  app.get("/storage/write/:fileId", isAuth(), async (req: any, res) => {
-    const fileId = req.params.fileId;
+//   app.get("/storage/write/:fileId", isAuth(), async (req: any, res) => {
+//     const fileId = req.params.fileId;
 
-    try {
-      const response = await gcsSignedUrl(gifStoriesBucket, fileId, 5, "write");
-      res.json(response).status(200);
-    } catch (error) {
-      res.send(error.message).status(404);
-    }
-  });
+//     try {
+//       const response = await gcsSignedUrl(gifStoriesBucket, fileId, 5, "write");
+//       res.json(response).status(200);
+//     } catch (error) {
+//       res.send(error.message).status(404);
+//     }
+//   });
 
-  app.get("/storage/read/:fileId", isAuth(), async (req: any, res) => {
-    const fileId = req.params.fileId;
+//   app.get("/storage/read/:fileId", isAuth(), async (req: any, res) => {
+//     const fileId = req.params.fileId;
 
-    try {
-      const response = await gcsSignedUrl(gifStoriesBucket, fileId, 5, "read");
-      res.json(response).status(200);
-    } catch (error) {
-      res.send(error.message).status(404);
-    }
-  });
+//     try {
+//       const response = await gcsSignedUrl(gifStoriesBucket, fileId, 5, "read");
+//       res.json(response).status(200);
+//     } catch (error) {
+//       res.send(error.message).status(404);
+//     }
+//   });
 
-  app.post("/delete-gif-story/:id/:mediaId", isAuth(), async (req: any, res) => {
-    const { id, mediaId } = req.params;
-    if (!isUUID.v4(id)) {
-      res.send({ ok: false });
-      return;
-    }
+//   app.post("/delete-gif-story/:id/:mediaId", isAuth(), async (req: any, res) => {
+//     const { id, mediaId } = req.params;
+//     if (!isUUID.v4(id)) {
+//       res.send({ ok: false });
+//       return;
+//     }
 
-    const criteria: Partial<GifStory> = { id };
+//     const criteria: Partial<GifStory> = { id };
 
-    if (req.userId !== "dac7eb0f-808b-4842-b193-5d68cc082609") {
-      criteria.creatorId = req.userId;
-    }
+//     if (req.userId !== "dac7eb0f-808b-4842-b193-5d68cc082609") {
+//       criteria.creatorId = req.userId;
+//     }
 
-    await GifStory.delete(criteria);
-    try {
-      await gifStoriesBucket.file(`${mediaId}.gif`).delete();
-    } catch (error) {
-      res.send(error.message).status(404);
-    }
+//     await GifStory.delete(criteria);
+//     try {
+//       await gifStoriesBucket.file(`${mediaId}.gif`).delete();
+//     } catch (error) {
+//       res.send(error.message).status(404);
+//     }
 
-    res.send({ ok: true });
-  });
+//     res.send({ ok: true });
+//   });
 
   app.post("/delete-text-story/:id", isAuth(), async (req: any, res) => {
     const { id } = req.params;
