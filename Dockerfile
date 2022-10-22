@@ -1,9 +1,17 @@
-FROM node:16 as api
+FROM node as env
 
 WORKDIR /app
-COPY init-db .
-COPY src .
-ADD ormconfig.json package.json yarn.lock tsconfig.json ./
-RUN yarn
 
-CMD npm start
+COPY ["package.json", "yarn.lock", "tsconfig.json", "./"]
+
+RUN set -eux; \
+    yarn install --ignore-scripts
+
+CMD yarn postinstall && yarn dev
+
+# Prod Build
+FROM env as prod
+
+COPY . .
+
+# TODO: What is needed to build for prod?
