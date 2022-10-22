@@ -1,15 +1,23 @@
-version: '2'
+version: '3.1'
 
 services:
-  postgresql:
-    image: docker.io/bitnami/postgresql:14
+  db:
+    image: postgres
     ports:
-      - '5432:5432'
+      - 5432:5432
     volumes:
-      - 'postgresql_data:/bitnami/postgresql'
+      - 'db_data:/var/lib/postgresql/data'
+      - './init-db/:/docker-entrypoint-initdb.d'
     environment:
-      - 'ALLOW_EMPTY_PASSWORD=yes'
+      POSTGRES_DB: stories
+      POSTGRES_PASSWORD: postgres
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
 volumes:
-  postgresql_data:
+  db_data:
     driver: local

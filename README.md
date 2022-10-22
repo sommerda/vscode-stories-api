@@ -6,7 +6,7 @@ https://github.com/ide-stories/vscode-stories
 
 # How to run on your computer
 
-1. Have PostgreSQL running on your computer
+1. Have PostgreSQL running on your computer (docker compose up -d)
 2. Create a database called `stories`
 3. Copy `.env.example` to `.env` and fill in `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (you will have to register a GitHub OAuth account and set the callback url to: http://localhost:8080/auth/github/callback)
 4. Fill in database credentials to `.env` ([typeorm docs options](https://typeorm.io/#/connection-options/postgres--cockroachdb-connection-options))
