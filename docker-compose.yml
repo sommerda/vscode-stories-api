@@ -18,6 +18,10 @@ services:
     ports:
       - 8081:8080
 
+  api:
+    build:
+      context: .
+
 volumes:
   db_data:
     driver: local
